@@ -1,0 +1,27 @@
+schema: '2.0'
+stages:
+  run_pipeline:
+    cmd: airbnb-ops run
+    deps:
+    - path: data/raw/listings_sample.csv
+      hash: md5
+      md5: 09fc36f4d7b02bb6c3dd8da2a6272ac5
+      size: 379
+    - path: data/raw/neighbourhood_segments.csv
+      hash: md5
+      md5: e0b8d7879e6e6fd03139be51e238a109
+      size: 176
+    - path: src/airbnb_ops
+      hash: md5
+      md5: 2ca00c76038abc6f449f1d5365f663b2.dir
+      size: 15851
+      nfiles: 14
+    outs:
+    - path: data/processed/airbnb_neighbourhood_summary.csv
+      hash: md5
+      md5: 5244c9ae1f7122062856e70849ef9970
+      size: 446
+    - path: reports/hw01_a_run_report.md
+      hash: md5
+      md5: 31eb47b72dda61664e978a0581d46556
+      size: 713
