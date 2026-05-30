@@ -1,0 +1,66 @@
+Sort  (cost=72642.47..72642.52 rows=22 width=156) (actual time=592.270..593.335 rows=22 loops=1)
+  Sort Key: (count(*)) DESC
+  Sort Method: quicksort  Memory: 27kB
+  Buffers: shared hit=2 read=29032
+  ->  GroupAggregate  (cost=72404.93..72641.98 rows=22 width=156) (actual time=586.666..593.304 rows=22 loops=1)
+        Group Key: l.neighbourhood_id
+        Buffers: shared hit=2 read=29032
+        ->  Sort  (cost=72404.93..72431.20 rows=10506 width=53) (actual time=586.014..587.893 rows=10480 loops=1)
+              Sort Key: l.neighbourhood_id
+              Sort Method: quicksort  Memory: 929kB
+              Buffers: shared hit=2 read=29032
+              ->  Hash Left Join  (cost=71411.63..71703.19 rows=10506 width=53) (actual time=565.777..583.397 rows=10480 loops=1)
+                    Hash Cond: (l.listing_id = r.listing_id)
+                    Buffers: shared hit=2 read=29032
+                    ->  Hash Right Join  (cost=57684.70..57948.67 rows=10506 width=53) (actual time=458.091..472.738 rows=10480 loops=1)
+                          Hash Cond: (calendar_day.listing_id = l.listing_id)
+                          Buffers: shared hit=2 read=20816
+                          ->  Finalize HashAggregate  (cost=57258.90..57390.22 rows=10506 width=72) (actual time=440.722..450.903 rows=10480 loops=1)
+                                Group Key: calendar_day.listing_id
+                                Batches: 1  Memory Usage: 4497kB
+                                Buffers: shared hit=2 read=20626
+                                ->  Gather  (cost=54868.78..57101.31 rows=21012 width=40) (actual time=418.073..426.283 rows=18699 loops=1)
+                                      Workers Planned: 2
+                                      Workers Launched: 2
+                                      Buffers: shared hit=2 read=20626
+                                      ->  Partial HashAggregate  (cost=53868.78..54000.11 rows=10506 width=40) (actual time=407.944..412.242 rows=6233 loops=3)
+                                            Group Key: calendar_day.listing_id
+                                            Batches: 1  Memory Usage: 2961kB
+                                            Buffers: shared hit=2 read=20626
+                                            Worker 0:  Batches: 1  Memory Usage: 2449kB
+                                            Worker 1:  Batches: 1  Memory Usage: 2705kB
+                                            ->  Parallel Bitmap Heap Scan on calendar_day  (cost=16035.63..50876.53 rows=598451 width=9) (actual time=110.925..275.409 rows=471600 loops=3)
+                                                  Recheck Cond: (date >= (CURRENT_DATE - '30 days'::interval))
+                                                  Heap Blocks: exact=7264
+                                                  Buffers: shared hit=2 read=20626
+                                                  ->  Bitmap Index Scan on idx_calendar_date  (cost=0.00..15676.56 rows=1436283 width=0) (actual time=116.427..116.428 rows=1414800 loops=1)
+                                                        Index Cond: (date >= (CURRENT_DATE - '30 days'::interval))
+                                                        Buffers: shared read=1203
+                          ->  Hash  (cost=294.80..294.80 rows=10480 width=21) (actual time=17.192..17.194 rows=10480 loops=1)
+                                Buckets: 16384  Batches: 1  Memory Usage: 666kB
+                                Buffers: shared read=190
+                                ->  Seq Scan on listing l  (cost=0.00..294.80 rows=10480 width=21) (actual time=0.156..11.116 rows=10480 loops=1)
+                                      Buffers: shared read=190
+                    ->  Hash  (cost=13658.66..13658.66 rows=5462 width=16) (actual time=107.623..107.690 rows=9383 loops=1)
+                          Buckets: 16384 (originally 8192)  Batches: 1 (originally 1)  Memory Usage: 568kB
+                          Buffers: shared read=8216
+                          ->  Subquery Scan on r  (cost=13549.41..13658.66 rows=5462 width=16) (actual time=102.654..105.474 rows=9383 loops=1)
+                                Buffers: shared read=8216
+                                ->  Finalize HashAggregate  (cost=13549.41..13604.03 rows=5462 width=16) (actual time=102.652..104.270 rows=9383 loops=1)
+                                      Group Key: review.listing_id
+                                      Batches: 1  Memory Usage: 1169kB
+                                      Buffers: shared read=8216
+                                      ->  Gather  (cost=12347.77..13494.80 rows=10924 width=16) (actual time=94.968..97.562 rows=13235 loops=1)
+                                            Workers Planned: 2
+                                            Workers Launched: 2
+                                            Buffers: shared read=8216
+                                            ->  Partial HashAggregate  (cost=11347.77..11402.40 rows=5462 width=16) (actual time=88.063..89.048 rows=4412 loops=3)
+                                                  Group Key: review.listing_id
+                                                  Batches: 1  Memory Usage: 721kB
+                                                  Buffers: shared read=8216
+                                                  Worker 0:  Batches: 1  Memory Usage: 465kB
+                                                  Worker 1:  Batches: 1  Memory Usage: 721kB
+                                                  ->  Parallel Seq Scan on review  (cost=0.00..10303.85 rows=208785 width=8) (actual time=0.055..38.209 rows=167028 loops=3)
+                                                        Buffers: shared read=8216
+Planning Time: 1.666 ms
+Execution Time: 595.405 ms
