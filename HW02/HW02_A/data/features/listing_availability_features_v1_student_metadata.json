@@ -1,0 +1,38 @@
+{
+  "dataset_version": "v1_student",
+  "entity_column": "listing_id",
+  "cutoff_date": "2026-08-11",
+  "history_start_date": "2026-05-13",
+  "label_end_date": "2026-09-10",
+  "past_window_days": 90,
+  "future_window_days": 30,
+  "high_demand_available_rate_threshold": 0.3,
+  "source_tables": [
+    "core.listing",
+    "core.host",
+    "core.neighbourhood",
+    "core.review",
+    "core.calendar_day"
+  ],
+  "target_definition": {
+    "target_column": "high_demand_proxy",
+    "rule": "high_demand_proxy = 1 if future_available_rate_30d <= threshold else 0",
+    "threshold": 0.3
+  },
+  "exclusion_rules": {
+    "forbidden_pii_columns": [
+      "bathrooms_text",
+      "host_id",
+      "host_pseudo_id",
+      "license",
+      "review_id",
+      "reviewer_id",
+      "reviewer_pseudo_id"
+    ],
+    "dropped_feature_columns": [],
+    "high_missing_drop_threshold": 0.95
+  },
+  "row_count": 10480,
+  "column_count": 33,
+  "model_input_column_count": 26
+}

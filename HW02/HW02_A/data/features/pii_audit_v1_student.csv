@@ -1,0 +1,11 @@
+table,column,pii_type,decision,reason
+listing,listing_id,entity identifier,keep as entity key only,needed to define one row per listing; not a model input
+listing,host_id,privacy-sensitive direct identifier,use for join only; exclude from final features,"links listing to a specific host; join key only, not a model feature"
+host,host_id,privacy-sensitive direct identifier,use for join only; exclude from final features,primary host key kept only during ETL joins; not a model feature
+host,host_pseudo_id,privacy-sensitive pseudonymized identifier,exclude from final features,still links records to the same host across tables; not a model feature
+listing,license,sensitive text,exclude from final features,government registration number that can identify a specific property or operator
+listing,bathrooms_text,raw text field,exclude from final features,parsed into numeric bathrooms; raw text is not needed in the ML dataset
+listing,neighbourhood_id,location surrogate key,exclude from final features,replaced by neighbourhood_name after join; ID alone is not a model feature
+review,review_id,privacy-sensitive direct identifier,exclude; aggregate in SQL only,review rows are aggregated before the ML dataset is built
+review,reviewer_id,privacy-sensitive direct identifier,exclude; aggregate in SQL only,identifies the guest who wrote a review; not a model feature
+review,reviewer_pseudo_id,privacy-sensitive pseudonymized identifier,exclude; aggregate in SQL only,still links reviews to the same guest; not a model feature
