@@ -1,0 +1,6 @@
+.venv/
+.venv_hw02/
+.venv_hw03/
+__pycache__/
+.pytest_cache/
+.env
