@@ -1,0 +1,14 @@
+{
+  "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+  "model_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "embedding_dim": 384,
+  "max_seq_len": 256,
+  "framework": "pytorch",
+  "framework_version": "2.7.1+cpu",
+  "transformers_version": "4.54.1",
+  "pooling": "mean-weight-by-attention-mask",
+  "normalization": "l2",
+  "built_by": "samin kakaei",
+  "build_timestamp_utc": "2026-06-21T21:09:43Z",
+  "notes": "Mean-pool then L2-normalize. See predict.py for the 7-step pipeline."
+}
