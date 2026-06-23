@@ -1,0 +1,181 @@
+bash scripts/01_build_image.sh
+Building qbc12-hw03-b-encoder:dev…
+[+] Building 7.1s (20/20) FINISHED                                                                                   docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                                                 0.0s
+ => => transferring dockerfile: 3.23kB                                                                                               0.0s
+ => resolve image config for docker-image://docker.io/docker/dockerfile:1.7                                                          3.5s
+ => CACHED docker-image://docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e    0.0s
+ => => resolve docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e               0.0s
+ => [internal] load metadata for docker.io/library/python:3.11-slim                                                                  1.9s
+ => [internal] load .dockerignore                                                                                                    0.0s
+ => => transferring context: 2B                                                                                                      0.0s
+ => [internal] load build context                                                                                                    1.1s
+ => => transferring context: 91.60MB                                                                                                 1.1s
+ => [builder 1/4] FROM docker.io/library/python:3.11-slim@sha256:ae52c5bef62a6bdd42cd1e8dffef86b9cd284bde9427da79839de7a4b983e7ca    0.0s
+ => => resolve docker.io/library/python:3.11-slim@sha256:ae52c5bef62a6bdd42cd1e8dffef86b9cd284bde9427da79839de7a4b983e7ca            0.0s
+ => CACHED [runtime  2/10] RUN groupadd --gid 1001 qbc12 &&     useradd  --uid 1001 --gid qbc12 --shell /bin/bash --create-home qbc  0.0s
+ => CACHED [runtime  3/10] WORKDIR /app                                                                                              0.0s
+ => CACHED [builder 2/4] WORKDIR /build                                                                                              0.0s
+ => CACHED [builder 3/4] COPY requirements.txt /build/requirements.txt                                                               0.0s
+ => CACHED [builder 4/4] RUN pip install --prefix=/install         torch==2.7.1         --index-url https://download.pytorch.org/wh  0.0s
+ => CACHED [runtime  4/10] COPY --from=builder /install /usr/local                                                                   0.0s
+ => CACHED [runtime  5/10] COPY bundle/requirements.txt /tmp/bundle-requirements.txt                                                 0.0s
+ => CACHED [runtime  6/10] RUN grep -v '^torch' /tmp/bundle-requirements.txt > /tmp/bundle-no-torch.txt &&     pip install --no-cac  0.0s
+ => CACHED [runtime  7/10] COPY app/ /app/app/                                                                                       0.0s
+ => CACHED [runtime  8/10] RUN chmod +x /app/app/entrypoint.sh &&     chown -R qbc12:qbc12 /app                                      0.0s
+ => CACHED [runtime  9/10] COPY bundle/ /app/bundle/                                                                                 0.0s
+ => CACHED [runtime 10/10] RUN chown -R qbc12:qbc12 /app/bundle                                                                      0.0s
+ => exporting to image                                                                                                               0.2s
+ => => exporting layers                                                                                                              0.0s
+ => => exporting manifest sha256:f27edb1c303d3611b28f983f47ecd09625019e9bb64e030fd04e480ea9509656                                    0.0s
+ => => exporting config sha256:15f3d133ae14b649e0ed7600fe52859e0276470a178304444cffbaffb9531270                                      0.0s
+ => => exporting attestation manifest sha256:c919905a31a195b0236a75a45b2569cdd9ad65de99a4083ab5a1361dac0ed0a0                        0.1s
+ => => exporting manifest list sha256:559dac642ed5a459a5c5ae292c978934ee032611efc01cdb41fe9e21b43f6820                               0.0s
+ => => naming to docker.io/library/qbc12-hw03-b-encoder:dev                                                                          0.0s
+ => => unpacking to docker.io/library/qbc12-hw03-b-encoder:dev                                                                       0.0s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/b9d9v0vbhdwl10zttgc1vzfc5
+
+Built: qbc12-hw03-b-encoder:dev
+Run:   bash scripts/02_run_local.sh
+bash scripts/02_run_local.sh
+Starting Qdrant + Postgres + API…
+[+] Running 3/3
+ ✔ Container qbc12-hw03-qdrant-local    Running                                                                                      0.0s 
+ ✔ Container qbc12-hw03-postgres-local  Running                                                                                      0.0s 
+ ✔ Container qbc12-hw03-b-api-local     Running                                                                                      0.0s 
+
+Waiting for API to become healthy (max 60s)…
+API is healthy.
+
+API logs (last 20 lines):
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://qdrant:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     127.0.0.1:42278 - "GET /health HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://qdrant:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     192.168.65.1:50660 - "GET /health HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:     192.168.65.1:27469 - "GET / HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://qdrant:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     192.168.65.1:50187 - "GET /health HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://qdrant:6333/collections/qbc12_corpus "HTTP/1.1 404 Not Found"
+qbc12-hw03-b-api-local  | INFO:     192.168.65.1:46514 - "GET /model-info HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://qdrant:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     127.0.0.1:45468 - "GET /health HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:     192.168.65.1:30596 - "POST /embed HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://qdrant:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     127.0.0.1:46956 - "GET /health HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://qdrant:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     127.0.0.1:33150 - "GET /health HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://qdrant:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     127.0.0.1:50936 - "GET /health HTTP/1.1" 200 OK
+qbc12-hw03-b-api-local  | INFO:httpx:HTTP Request: GET http://qdrant:6333/collections "HTTP/1.1 200 OK"
+qbc12-hw03-b-api-local  | INFO:     127.0.0.1:50716 - "GET /health HTTP/1.1" 200 OK
+bash scripts/04_smoke_test.sh
+=== / ===
+{
+    "message": "QBC12 HW3 Encoder API",
+    "docs": "/docs",
+    "health": "/health",
+    "version": "0.1.0"
+}
+
+=== /health ===
+{
+    "status": "ok",
+    "bundle_loaded": true,
+    "bundle_dir": "/app/bundle",
+    "qdrant_reachable": true,
+    "pg_reachable": true,
+    "error": null
+}
+
+=== /model-info ===
+{
+    "bundle_version": "1.0.0",
+    "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+    "model_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "device": "cpu",
+    "max_seq_len": 256,
+    "embedding_dim": 384,
+    "bundle_dir": "/app/bundle",
+    "qdrant_collection": "qbc12_corpus",
+    "qdrant_vector_count": null
+}
+
+=== /embed ===
+{
+    "count": 3,
+    "dim": 384,
+    "embeddings": [
+        [
+            -0.0785861536860466,
+            0.010210052132606506,
+            0.04770497605204582,
+            0.00025735097005963326,
+            -0.00016384544142056257,
+            0.008066773414611816,
+            0.06489700078964233,
+            -0.030600009486079216,
+            0.10069607198238373,
+            -0.02554590255022049,
+            -0.027727864682674408,
+            0.0569695346057415,
+            0.018933139741420746,
+            0.035548534244298935,
+            -0.04392201453447342,
+            0.026047075167298317,
+            0.010435652919113636,
+            0.01360992155969143,
+            -0.12426716834306717,
+            0.057327430695295334,
+            -0.10483527928590775,
+            -0.08793941885232925,
+            0.03775292634963989,
+            0.027159802615642548,
+            0.005167732015252113,
+
+Smoke OK. Open http://127.0.0.1:8000/docs in a browser for the full Swagger.
+TOKENIZERS_PARALLELISM=false OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 \
+        PYTHONPATH=. python -m pytest tests/ -v
+========================================================== test session starts ===========================================================
+platform linux -- Python 3.10.12, pytest-8.3.3, pluggy-1.6.0 -- /usr/bin/python
+cachedir: .pytest_cache
+rootdir: /home/samin/Desktop/mlops/MLOps-Course/HW03/HW3_Student/HW3_B
+plugins: anyio-4.12.1, opik-1.8.20
+collected 15 items                                                                                                                       
+
+tests/test_embed.py::test_embed_basic PASSED                                                                                       [  6%]
+tests/test_embed.py::test_embed_l2_normalized PASSED                                                                               [ 13%]
+tests/test_embed.py::test_embed_rejects_empty PASSED                                                                               [ 20%]
+tests/test_embed.py::test_embed_rejects_extra_field PASSED                                                                         [ 26%]
+tests/test_embed.py::test_embed_rejects_oversize_batch PASSED                                                                      [ 33%]
+tests/test_embed.py::test_predict_returns_label PASSED                                                                             [ 40%]
+tests/test_health.py::test_root PASSED                                                                                             [ 46%]
+tests/test_health.py::test_health_payload_shape PASSED                                                                             [ 53%]
+tests/test_health.py::test_model_info_requires_bundle PASSED                                                                       [ 60%]
+tests/test_reindex.py::test_reindex_dry_run_help PASSED                                                                            [ 66%]
+tests/test_search.py::test_search_basic PASSED                                                                                     [ 73%]
+tests/test_search.py::test_search_excludes_neutral_by_default PASSED                                                               [ 80%]
+tests/test_search.py::test_search_with_primary_filter PASSED                                                                       [ 86%]
+tests/test_search.py::test_search_top_k_bounds PASSED                                                                              [ 93%]
+tests/test_search.py::test_search_rejects_unknown_field PASSED                                                                     [100%]
+
+============================================================ warnings summary ============================================================
+../../../../../../.local/lib/python3.10/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /home/samin/.local/lib/python3.10/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+tests/test_embed.py::test_embed_basic
+tests/test_embed.py::test_embed_l2_normalized
+tests/test_embed.py::test_predict_returns_label
+tests/test_search.py::test_search_basic
+tests/test_search.py::test_search_excludes_neutral_by_default
+tests/test_search.py::test_search_with_primary_filter
+  /home/samin/.local/lib/python3.10/site-packages/torch/nn/modules/module.py:1762: FutureWarning: `encoder_attention_mask` is deprecated and will be removed in version 4.55.0 for `BertSdpaSelfAttention.forward`.
+    return forward_call(*args, **kwargs)
+
+tests/test_embed.py::test_predict_returns_label
+  /home/samin/.local/lib/python3.10/site-packages/qdrant_client/qdrant_remote.py:130: UserWarning: Api key is used with an insecure connection.
+    warnings.warn("Api key is used with an insecure connection.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+==================================================== 15 passed, 8 warnings in 26.99s =====================================================
