@@ -65,6 +65,11 @@ def healthz_live():
     return {"status": "live"}
 
 
+@app.get("/version", tags=["service"])
+def version():
+    return {"image_tag": os.getenv("IMAGE_TAG", "unknown")}
+
+
 @app.get("/healthz/ready", tags=["service"])
 def healthz_ready(response: Response):
     if getattr(app.state, "loaded", False):
