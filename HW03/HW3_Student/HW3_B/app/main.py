@@ -6,7 +6,7 @@ import os
 import time
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, Response, status
 
 from . import client_pg, client_qdrant, config
 from . import predictor as predictor_mod
@@ -33,14 +33,17 @@ model_service.load()  # eager load for pytest TestClient without lifespan contex
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    app.state.loaded = False
     log.info("HW3_B starting. BUNDLE_DIR=%s", config.BUNDLE_DIR)
     if not model_service.state.loaded:
         model_service.load()
-    if model_service.state.loaded:
+    app.state.loaded = model_service.state.loaded
+    if app.state.loaded:
         log.info("Bundle loaded: %s", model_service.state.bundle_dir)
     else:
         log.error("Bundle load FAILED: %s", model_service.state.error)
     yield
+    app.state.loaded = False
     log.info("HW3_B shutting down.")
 
 
@@ -55,6 +58,19 @@ def root() -> RootResponse:
         health="/health",
         version=config.APP_VERSION,
     )
+
+
+@app.get("/healthz/live", tags=["service"])
+def healthz_live():
+    return {"status": "live"}
+
+
+@app.get("/healthz/ready", tags=["service"])
+def healthz_ready(response: Response):
+    if getattr(app.state, "loaded", False):
+        return {"status": "ready", "model_loaded": True}
+    response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+    return {"status": "not_ready", "model_loaded": False}
 
 
 @app.get("/health", response_model=HealthResponse, tags=["service"])
@@ -106,13 +122,15 @@ def embed(req: EmbedRequest) -> EmbedResponse:
     if len(req.texts) > config.EMBED_BATCH_HARD_CAP:
         raise HTTPException(status_code=413, detail="batch too large")
 
-    vectors = predictor_mod.embed_texts(
-        model_service.require_predictor(), req.texts
-    )
+    t0 = time.perf_counter()
+    vectors = predictor_mod.embed_texts(req.texts)
+    elapsed_ms = (time.perf_counter() - t0) * 1000
+
     return EmbedResponse(
-        count=len(req.texts),
-        dim=vectors.shape[1],
-        embeddings=vectors.tolist(),
+        vectors=vectors,
+        dim=config.EMBED_DIM,
+        count=len(vectors),
+        elapsed_ms=elapsed_ms,
     )
 
 
@@ -120,32 +138,17 @@ def embed(req: EmbedRequest) -> EmbedResponse:
 def predict(req: PredictRequest) -> PredictResponse:
     if not model_service.state.loaded:
         raise HTTPException(status_code=503, detail="model not loaded")
+    if len(req.texts) > config.EMBED_BATCH_HARD_CAP:
+        raise HTTPException(status_code=413, detail="batch too large")
 
     t0 = time.perf_counter()
-    vec = predictor_mod.embed_texts(
-        model_service.require_predictor(), [req.text]
-    )[0].tolist()
+    vectors = predictor_mod.embed_texts(req.texts)
+    elapsed_ms = (time.perf_counter() - t0) * 1000
 
-    try:
-        hits = client_qdrant.search(
-            collection=config.QDRANT_COLLECTION,
-            vector=vec,
-            top_k=1,
-            exclude_neutral=False,
-        )
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"qdrant search failed: {exc}") from exc
-    if not hits:
-        raise HTTPException(status_code=404, detail="no match found in corpus")
-
-    best = hits[0]
-    payload = best.payload or {}
-    elapsed_ms = (time.perf_counter() - t0) * 1000.0
     return PredictResponse(
-        text=req.text,
-        predicted_label=payload.get("primary", payload.get("primary_label", "unknown")),
-        confidence=min(1.0, float(best.score)),
-        matched_text=payload.get("text", ""),
+        vectors=vectors,
+        dim=config.EMBED_DIM,
+        count=len(vectors),
         elapsed_ms=elapsed_ms,
     )
 
@@ -154,24 +157,30 @@ def predict(req: PredictRequest) -> PredictResponse:
 def search(req: SearchRequest) -> SearchResponse:
     if not model_service.state.loaded:
         raise HTTPException(status_code=503, detail="model not loaded")
+    if len(req.texts) > config.SEARCH_MAX_BATCH_TEXTS:
+        raise HTTPException(status_code=413, detail="batch too large")
 
-    query_vec = predictor_mod.embed_texts(
-        model_service.require_predictor(), [req.query]
-    )[0].tolist()
-    try:
-        hits, took_ms = hybrid_search(
-            query_vec,
-            req.top_k,
-            req.lang,
-            req.primary,
-            req.exclude_neutral,
-        )
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"search failed: {exc}") from exc
+    t0 = time.perf_counter()
+    results = hybrid_search(req.texts, req.top_k, req.filters)
+    elapsed_ms = (time.perf_counter() - t0) * 1000
+
     return SearchResponse(
-        query=req.query,
-        count=len(hits),
-        top_k=req.top_k,
-        took_ms=took_ms,
-        hits=hits,
+        results=results,
+        count=len(results),
+        elapsed_ms=elapsed_ms,
     )
+
+
+@app.post("/reindex", tags=["admin"])
+def reindex():
+    if not model_service.state.loaded:
+        raise HTTPException(status_code=503, detail="model not loaded")
+    from .reindex import run_reindex
+
+    run_reindex()
+    return {"status": "ok"}
+
+
+@app.get("/metrics", tags=["service"])
+def metrics():
+    return {"status": "ok"}

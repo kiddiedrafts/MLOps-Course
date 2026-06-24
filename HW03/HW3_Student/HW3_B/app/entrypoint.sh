@@ -28,8 +28,9 @@ echo "[entrypoint] TOKENIZERS_PARALLELISM=${TOKENIZERS_PARALLELISM}"
 trap 'echo "[entrypoint] SIGTERM received, draining…"; kill -TERM "$PID" 2>/dev/null || true; wait "$PID" || true' TERM INT
 
 # 7. Start uvicorn (exec so PID 1 is the python process; signals work)
+LOG_LEVEL_LC="$(echo "${LOG_LEVEL:-info}" | tr '[:upper:]' '[:lower:]')"
 exec uvicorn app.main:app \
   --host 0.0.0.0 \
   --port "${PORT:-8000}" \
   --workers "${UVICORN_WORKERS:-1}" \
-  --log-level "${LOG_LEVEL:-info}"
+  --log-level "${LOG_LEVEL_LC}"
