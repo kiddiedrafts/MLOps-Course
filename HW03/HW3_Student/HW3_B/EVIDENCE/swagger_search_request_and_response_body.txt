@@ -1,0 +1,131 @@
+Request body:
+{
+  "query": "I am so happy right now",
+  "top_k": 10,
+  "lang": "en",
+  "exclude_neutral": true
+}
+
+
+Response body:
+{
+  "query": "I am so happy right now",
+  "count": 10,
+  "top_k": 10,
+  "took_ms": 4957.551990999491,
+  "hits": [
+    {
+      "id": "9557a0e2-d26f-41f8-9edd-9d2361e967f4",
+      "score": 0.72561896,
+      "text": "I'm so happy for you !",
+      "primary": "joy",
+      "labels": [
+        "joy"
+      ],
+      "lang": "en",
+      "source": "goemotions"
+    },
+    {
+      "id": "8cbb65ee-95c2-44d0-88d8-438323c22cfd",
+      "score": 0.72423273,
+      "text": "I am so so happy for you. <3",
+      "primary": "joy",
+      "labels": [
+        "joy"
+      ],
+      "lang": "en",
+      "source": "goemotions"
+    },
+    {
+      "id": "c48cd28f-8697-4e5f-a764-37d8b96c1f07",
+      "score": 0.6594421,
+      "text": "So so happy, more than you believe ",
+      "primary": "joy",
+      "labels": [
+        "joy"
+      ],
+      "lang": "en",
+      "source": "goemotions"
+    },
+    {
+      "id": "6b687632-5cb4-4561-a1cf-b7b1114ef4a1",
+      "score": 0.63235664,
+      "text": "So happy for you I am crying too.",
+      "primary": "joy",
+      "labels": [
+        "joy",
+        "sadness"
+      ],
+      "lang": "en",
+      "source": "goemotions"
+    },
+    {
+      "id": "bf48d789-187b-4075-83b8-b4e2acd9af42",
+      "score": 0.62695706,
+      "text": "I'm happy for you and myself.",
+      "primary": "joy",
+      "labels": [
+        "joy"
+      ],
+      "lang": "en",
+      "source": "goemotions"
+    },
+    {
+      "id": "d7d261ad-efec-4f80-8870-78aff00851fa",
+      "score": 0.6259122,
+      "text": "I'm also happy you're still here!!",
+      "primary": "joy",
+      "labels": [
+        "joy"
+      ],
+      "lang": "en",
+      "source": "goemotions"
+    },
+    {
+      "id": "c87dd322-fee2-4aba-9dbe-60a688fd0d99",
+      "score": 0.6220201,
+      "text": "So happy for you both!",
+      "primary": "joy",
+      "labels": [
+        "joy"
+      ],
+      "lang": "en",
+      "source": "goemotions"
+    },
+    {
+      "id": "649ad344-1065-4913-9184-730acfde5ce4",
+      "score": 0.61687136,
+      "text": "Me, for example. I am very very happy.",
+      "primary": "joy",
+      "labels": [
+        "joy"
+      ],
+      "lang": "en",
+      "source": "goemotions"
+    },
+    {
+      "id": "b4902da8-3133-4787-814e-bffc7b4518f6",
+      "score": 0.61493164,
+      "text": "I am happy for you. No, seriously, I am.",
+      "primary": "admiration",
+      "labels": [
+        "admiration",
+        "caring",
+        "love"
+      ],
+      "lang": "en",
+      "source": "goemotions"
+    },
+    {
+      "id": "b2b76211-a5fa-4f51-a4f0-1bf4917f90d5",
+      "score": 0.6146027,
+      "text": "Makes me very happy indeed.",
+      "primary": "joy",
+      "labels": [
+        "joy"
+      ],
+      "lang": "en",
+      "source": "goemotions"
+    }
+  ]
+}

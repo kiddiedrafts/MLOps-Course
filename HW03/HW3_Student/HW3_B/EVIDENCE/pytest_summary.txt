@@ -1,0 +1,45 @@
+TOKENIZERS_PARALLELISM=false OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 \
+        PYTHONPATH=. python -m pytest tests/ -v
+============================================================= test session starts =============================================================
+platform linux -- Python 3.10.12, pytest-8.3.3, pluggy-1.6.0 -- /usr/bin/python
+cachedir: .pytest_cache
+rootdir: /home/samin/Desktop/mlops/MLOps-Course/HW03/HW3_Student/HW3_B
+plugins: anyio-4.12.1, opik-1.8.20
+collected 15 items                                                                                                                            
+
+tests/test_embed.py::test_embed_basic PASSED                                                                                            [  6%]
+tests/test_embed.py::test_embed_l2_normalized PASSED                                                                                    [ 13%]
+tests/test_embed.py::test_embed_rejects_empty PASSED                                                                                    [ 20%]
+tests/test_embed.py::test_embed_rejects_extra_field PASSED                                                                              [ 26%]
+tests/test_embed.py::test_embed_rejects_oversize_batch PASSED                                                                           [ 33%]
+tests/test_embed.py::test_predict_returns_label PASSED                                                                                  [ 40%]
+tests/test_health.py::test_root PASSED                                                                                                  [ 46%]
+tests/test_health.py::test_health_payload_shape PASSED                                                                                  [ 53%]
+tests/test_health.py::test_model_info_requires_bundle PASSED                                                                            [ 60%]
+tests/test_reindex.py::test_reindex_dry_run_help PASSED                                                                                 [ 66%]
+tests/test_search.py::test_search_basic PASSED                                                                                          [ 73%]
+tests/test_search.py::test_search_excludes_neutral_by_default PASSED                                                                    [ 80%]
+tests/test_search.py::test_search_with_primary_filter PASSED                                                                            [ 86%]
+tests/test_search.py::test_search_top_k_bounds PASSED                                                                                   [ 93%]
+tests/test_search.py::test_search_rejects_unknown_field PASSED                                                                          [100%]
+
+============================================================== warnings summary ===============================================================
+../../../../../../.local/lib/python3.10/site-packages/opentelemetry/util/_importlib_metadata.py:32
+  /home/samin/.local/lib/python3.10/site-packages/opentelemetry/util/_importlib_metadata.py:32: DeprecationWarning: SelectableGroups dict interface is deprecated. Use select.
+    return EntryPoints(ep for group_eps in eps.values() for ep in group_eps)
+
+tests/test_embed.py::test_embed_basic
+tests/test_embed.py::test_embed_l2_normalized
+tests/test_embed.py::test_predict_returns_label
+tests/test_search.py::test_search_basic
+tests/test_search.py::test_search_excludes_neutral_by_default
+tests/test_search.py::test_search_with_primary_filter
+  /home/samin/.local/lib/python3.10/site-packages/torch/nn/modules/module.py:1762: FutureWarning: `encoder_attention_mask` is deprecated and will be removed in version 4.55.0 for `BertSdpaSelfAttention.forward`.
+    return forward_call(*args, **kwargs)
+
+tests/test_embed.py::test_predict_returns_label
+  /home/samin/.local/lib/python3.10/site-packages/qdrant_client/qdrant_remote.py:130: UserWarning: Api key is used with an insecure connection.
+    warnings.warn("Api key is used with an insecure connection.")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================================================= 15 passed, 8 warnings in 25.62s =======================================================

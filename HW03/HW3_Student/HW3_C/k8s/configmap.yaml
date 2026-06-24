@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: qbc12-hw03-c-samin-kakaei
+data:
+  log_level: "INFO"
+  threshold: "0.5"

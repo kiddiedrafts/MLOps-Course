@@ -1,0 +1,148 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: embedder-green
+  namespace: qbc12-hw03-c-samin-kakaei
+  labels:
+    app: embedder
+    version: v3
+    track: green
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: embedder
+      track: green
+  template:
+    metadata:
+      labels:
+        app: embedder
+        version: v3
+        track: green
+    spec:
+      initContainers:
+      - name: bundle-pull
+        image: 185.50.38.163:35000/init-bundle:v1
+        imagePullPolicy: Always
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          set -e
+          mc alias set myminio http://185.50.38.163:33333 "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY"
+          mkdir -p /bundle
+          mc cp --recursive myminio/hw03-bundles/samin_kakaei/ /bundle/
+          ls -la /bundle/model/ | head
+          echo "[bundle-pull] done"
+        env:
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-credentials
+              key: minio-access-key
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-credentials
+              key: minio-secret-key
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+        volumeMounts:
+        - name: bundle
+          mountPath: /bundle
+      containers:
+      - name: api
+        image: 185.50.38.163:35000/qbc12-embedder-samin-kakaei:v3
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8000
+        startupProbe:
+          httpGet:
+            path: /healthz/live
+            port: http
+          initialDelaySeconds: 0
+          periodSeconds: 5
+          failureThreshold: 24
+        livenessProbe:
+          httpGet:
+            path: /healthz/live
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /healthz/ready
+            port: http
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        resources:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        securityContext:
+          runAsUser: 10001
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [ALL]
+        env:
+        - name: MODEL_SOURCE
+          value: "local"
+        - name: IMAGE_TAG
+          value: "v3"
+        - name: BUNDLE_DIR
+          value: "/bundle"
+        - name: QDRANT_URL
+          value: "http://185.50.38.163:6333"
+        - name: QDRANT_COLLECTION
+          value: "qbc12_corpus"
+        - name: OMP_NUM_THREADS
+          value: "2"
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: log_level
+        - name: THRESHOLD
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: threshold
+        - name: QDRANT_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-credentials
+              key: qdrant-api-key
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: app-credentials
+              key: database-url
+        volumeMounts:
+        - name: bundle
+          mountPath: /bundle
+          readOnly: true
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: bundle
+        emptyDir:
+          sizeLimit: 500Mi
+      - name: tmp
+        emptyDir:
+          sizeLimit: 64Mi

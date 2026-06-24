@@ -1,0 +1,30 @@
+{
+  "format_version": 1,
+  "files": {
+    "__pycache__/predict.cpython-310.pyc": "adf7b67e0f0083d892e51c73c4839538898cbd088d369460d0e28ef8d76e3f4c",
+    "metadata.json": "167bacd2350833cd00f60e6c47997439c23d6e93410348301af23764879fba5b",
+    "model/.cache/huggingface/.gitignore": "684888c0ebb17f374298b65ee2807526c066094c701bcc7ebbe1c1095f494fc1",
+    "model/.cache/huggingface/download/config.json.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/.cache/huggingface/download/config.json.metadata": "6a674d636e1f63699cc3ff8eec88ef86504a6db9fc0a7049f89ce4a4afef034a",
+    "model/.cache/huggingface/download/model.safetensors.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/.cache/huggingface/download/model.safetensors.metadata": "fe0a25b6f84489dd23ebc2e68a7e09610591311e392742439c8d2a905b7cd146",
+    "model/.cache/huggingface/download/special_tokens_map.json.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/.cache/huggingface/download/special_tokens_map.json.metadata": "15148030c49e8acb7f0c9477e9c97b6d74ded2f189b08078cffd1b30d04a0a7a",
+    "model/.cache/huggingface/download/tokenizer.json.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/.cache/huggingface/download/tokenizer.json.metadata": "566c85ff6eebb36f6beab13d8b22a8d9335d2d506d18ff2b6e140d2c0bc1198e",
+    "model/.cache/huggingface/download/tokenizer_config.json.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/.cache/huggingface/download/tokenizer_config.json.metadata": "8da2e0a17b435233e80e36f9bf4a201e4acad35e7e0c3feb79e939c84c3f7115",
+    "model/.cache/huggingface/download/vocab.txt.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/.cache/huggingface/download/vocab.txt.metadata": "f6bac16ebf4d7e08abeb512284eea28ddb82796c9ff7f6806a4550016c1ae434",
+    "model/.commit": "d36d67e02523717e3871dbcce928f122ed24afbcd375ca81600d4474cb618134",
+    "model/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/config.json": "953f9c0d463486b10a6871cc2fd59f223b2c70184f49815e7efbcab5d8908b41",
+    "model/model.safetensors": "53aa51172d142c89d9012cce15ae4d6cc0ca6895895114379cacb4fab128d9db",
+    "model/special_tokens_map.json": "303df45a03609e4ead04bc3dc1536d0ab19b5358db685b6f3da123d05ec200e3",
+    "model/tokenizer.json": "be50c3628f2bf5bb5e3a7f17b1f74611b2561a3a27eeab05e5aa30f411572037",
+    "model/tokenizer_config.json": "acb92769e8195aabd29b7b2137a9e6d6e25c476a4f15aa4355c233426c61576b",
+    "model/vocab.txt": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+    "predict.py": "c4f04ca7d5d50af7e0516a15e35e08516d57c2bf61e23b3665cf353d1d68360b",
+    "requirements.txt": "15ffb726f5d5cb2f096a85358f794c6eab07752fcf542403bc867bbb1208e8ff"
+  }
+}
