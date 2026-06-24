@@ -112,6 +112,7 @@ def model_info() -> ModelInfoResponse:
         bundle_dir=str(model_service.state.bundle_dir or ""),
         qdrant_collection=config.QDRANT_COLLECTION,
         qdrant_vector_count=client_qdrant.vector_count(config.QDRANT_COLLECTION),
+        threshold=config.PREDICTION_THRESHOLD,
     )
 
 

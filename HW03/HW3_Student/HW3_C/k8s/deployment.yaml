@@ -5,9 +5,14 @@ metadata:
   namespace: qbc12-hw03-c-samin-kakaei
   labels:
     app: embedder
-    version: v1
+    version: v2
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: embedder
@@ -15,7 +20,7 @@ spec:
     metadata:
       labels:
         app: embedder
-        version: v1
+        version: v2
     spec:
       initContainers:
       - name: bundle-pull
@@ -108,6 +113,11 @@ spec:
             configMapKeyRef:
               name: app-config
               key: log_level
+        - name: THRESHOLD
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: threshold
         - name: QDRANT_API_KEY
           valueFrom:
             secretKeyRef:

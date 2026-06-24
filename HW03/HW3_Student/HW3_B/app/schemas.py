@@ -29,6 +29,7 @@ class ModelInfoResponse(BaseModel):
     bundle_dir: str
     qdrant_collection: str
     qdrant_vector_count: Optional[int] = None
+    threshold: float
 
 
 class RootResponse(BaseModel):
