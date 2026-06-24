@@ -8,6 +8,7 @@ Submissions for the QBC12 MLOps bootcamp.
 |----|-------|----------|
 | [HW01](HW01/) | Airbnb Ops | Docker pipeline, SQL optimization, Airflow scheduling |
 | [HW02](HW02/) | Listing Availability ML | ETL, MLflow experiments, FastAPI serving |
+| [HW03](HW03/) | Model Serving & Deployment | Versioned encoder bundle, Dockerized FastAPI, Kubernetes on k3s |
 
 Each homework folder has its own README with setup, flow, and deliverables.
 
@@ -51,9 +52,26 @@ HW02-B  train/compare models → log to MLflow → pick production candidate
 HW02-C  load model from MLflow → expose /predict API → test in Swagger
 ```
 
-## Notes
+---
 
-- Work in each subfolder from that folder's root (notebooks use relative paths).
-- Do not commit `.env`, `.venv/`, or credentials.
-- HW01 B/C use shared course Postgres, Metabase, and Airflow.
-- HW02 B/C use shared course Postgres and MLflow tracking server.
+## HW03 — Model Serving & Deployment
+
+Three connected assignments: freeze a versioned encoder bundle, containerize it as a FastAPI embedder service, then deploy to a shared k3s cluster with production-style Kubernetes scenarios.
+
+| Folder | Topic | Start here |
+|--------|-------|------------|
+| [HW3_A](HW03/HW3_Student/HW3_A/) | Versioned encoder bundle, pytest, MLflow, MinIO upload | `encoder_bundle.ipynb` |
+| [HW3_B](HW03/HW3_Student/HW3_B/) | FastAPI embedder, Docker image, compose smoke tests | `app/main.py`, `Makefile` |
+| [HW3_C](HW03/HW3_Student/HW3_C/) | k3s deployment: probes, rolling updates, blue/green, HPA, PDB | `01_first_deployment/` → `07_prestop_and_eval/` |
+
+```text
+HW3-A  frozen bundle (predict.py + MANIFEST) → MLflow + MinIO
+   ↓
+HW3-B  FastAPI (/embed, /search, /health) → Docker image → registry push
+   ↓
+HW3-C  init container + probes → failure modes → rolling update → blue/green
+       → HPA → PDB → preStop + verification → scale to zero
+```
+
+HW3_C work is organized into seven task folders under `HW03/HW3_Student/HW3_C/`. Each task has a `README.md`, Kubernetes manifests live in `k8s/`, and screenshots go in `EVIDENCE/`. See the [HW3_C README](HW03/HW3_Student/HW3_C/README.md) for submission details (13 screenshots + `k8s/*.yaml`).
+
